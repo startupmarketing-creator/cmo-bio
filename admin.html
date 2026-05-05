@@ -26,21 +26,44 @@
   .field { margin-bottom: 1rem; }
   .field:last-child { margin-bottom: 0; }
   label { display: block; font-size: 12px; font-weight: 500; color: var(--text2); margin-bottom: 5px; }
-  input[type=text], input[type=url], input[type=date], textarea {
+  input[type=text], input[type=url], input[type=date], select, textarea {
     width: 100%; padding: 9px 12px; font-size: 14px;
     font-family: inherit; border: 1px solid var(--border);
     border-radius: 8px; background: var(--bg); color: var(--text);
     outline: none; transition: border-color 0.15s;
   }
-  input:focus, textarea:focus { border-color: var(--accent); }
+  input:focus, textarea:focus, select:focus { border-color: var(--accent); }
   textarea { min-height: 200px; resize: vertical; line-height: 1.6; font-family: 'Courier New', monospace; font-size: 13px; }
 
   .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 
-  .tags-grid { display: flex; flex-wrap: wrap; gap: 8px; }
-  .tag-chip { display: flex; align-items: center; gap: 5px; padding: 5px 12px; border: 1px solid var(--border); border-radius: 20px; cursor: pointer; font-size: 12px; color: var(--text2); user-select: none; transition: all 0.15s; }
-  .tag-chip:hover { border-color: var(--accent); color: var(--accent); }
-  .tag-chip.selected { background: var(--accent); border-color: var(--accent); color: white; }
+  /* Tag groups */
+  .tag-group { margin-bottom: 1rem; }
+  .tag-group:last-child { margin-bottom: 0; }
+  .tag-group-label { font-size: 11px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 6px; }
+  .tags-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+
+  /* B-style chips: pastel bg, colored border 1.5px, colored text */
+  .tag-chip {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1.5px solid;
+    background: var(--bg2);
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.15s;
+    line-height: 1.3;
+  }
+  .tag-chip.hidden-tag { opacity: 0.55; }
+  .tag-chip.hidden-tag::after { content: ' (hidden)'; font-size: 10px; opacity: 0.7; }
+  .tag-chip.selected {
+    /* invert: bg becomes the deep text color, text becomes white */
+    color: #fff !important;
+    box-shadow: inset 0 0 0 9999px var(--chip-text);
+  }
 
   .toolbar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
   .tb-btn { padding: 5px 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg2); font-size: 12px; cursor: pointer; color: var(--text2); }
@@ -123,15 +146,16 @@
   <!-- TAGS -->
   <div class="section">
     <div class="section-title">Tags — click to select</div>
-    <div class="tags-grid" id="tags-grid"></div>
+    <div id="tags-by-group"></div>
 
-    <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);">
+    <div style="margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border);">
       <label style="display:block;font-size:12px;font-weight:500;color:var(--text2);margin-bottom:6px;">Add a new tag</label>
-      <div style="display:flex;gap:8px;">
-        <input type="text" id="new-tag-label" placeholder="Tag name e.g. Positioning" style="flex:1;">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <input type="text" id="new-tag-label" placeholder="Tag name e.g. Positioning" style="flex:1;min-width:180px;">
+        <select id="new-tag-group" style="width:auto;flex:0 0 auto;"></select>
         <button class="btn btn-primary" style="padding:9px 16px;font-size:13px;" onclick="addNewTag()">+ Add</button>
       </div>
-      <div class="hint" style="margin-top:6px;">New tags are added to this session and highlighted in the generated JSON. Copy them to <code>tags.json</code> afterwards.</div>
+      <div class="hint" style="margin-top:6px;">New tags get an auto-assigned numeric ID and are highlighted. Copy them to <code>tags.json</code> afterwards.</div>
       <div id="new-tags-reminder" style="display:none;margin-top:10px;background:#fff3cd;border-radius:8px;padding:10px 14px;font-size:12px;color:#856404;">
         <strong>📋 Add these to tags.json:</strong>
         <div id="new-tags-list" style="margin-top:6px;font-family:monospace;"></div>
@@ -217,76 +241,116 @@
 </div>
 
 <script>
-const TAGS = [
-  {id:"crm",label:"CRM"},{id:"retention",label:"Retention"},{id:"acquisition",label:"Acquisition"},
-  {id:"attention",label:"Attention"},{id:"creative",label:"Creative"},{id:"ltv",label:"LTV · CAC"},
-  {id:"saas",label:"SaaS"},{id:"b2b",label:"B2B"},{id:"b2c",label:"B2C"},
-  {id:"strategy",label:"Strategy"},{id:"analytics",label:"Analytics"},{id:"gtm",label:"Go-to-market"},
-  {id:"seasonality",label:"Seasonality"},{id:"product",label:"Product"},{id:"conversion",label:"Conversion"},
-  {id:"brand",label:"Brand"},{id:"content",label:"Content"},{id:"loyalty",label:"Loyalty"},
-  {id:"pricing",label:"Pricing"},{id:"ab-testing",label:"A/B Testing"}
-];
-
-let selectedTags = [];
+let GROUPS = {};
+let TAGS   = [];
+let selectedTags = []; // numeric IDs
 let contentImages = [];
-let newTags = []; // tags added in this session
+let newTags = [];      // tags added in this session
 
-// Render tags
-const grid = document.getElementById('tags-grid');
-TAGS.forEach(t => renderTagChip(t, false));
+const GROUP_BASE = {
+  CRM: 100, Acquisition: 200, Strategy: 300,
+  Analytics: 400, Product: 500, Leadership: 600
+};
 
-function renderTagChip(t, isNew) {
+// ── Load tags.json ─────────────────────────────────────────
+fetch('tags.json')
+  .then(r => r.json())
+  .then(data => {
+    GROUPS = data.groups || {};
+    TAGS   = data.tags   || [];
+    renderGroupSelect();
+    renderAllChips();
+  })
+  .catch(() => {
+    document.getElementById('tags-by-group').innerHTML =
+      '<p style="color:var(--red);font-size:12px;">Could not load tags.json</p>';
+  });
+
+function renderGroupSelect() {
+  const sel = document.getElementById('new-tag-group');
+  sel.innerHTML = Object.keys(GROUPS)
+    .map(g => `<option value="${g}">${g}</option>`)
+    .join('');
+}
+
+function renderAllChips() {
+  const root = document.getElementById('tags-by-group');
+  root.innerHTML = '';
+  Object.keys(GROUPS).forEach(groupName => {
+    const g = GROUPS[groupName];
+    const groupTags = TAGS.filter(t => t.group === groupName);
+    if (!groupTags.length) return;
+
+    const block = document.createElement('div');
+    block.className = 'tag-group';
+    block.innerHTML = `
+      <div class="tag-group-label" style="color:${g.text};">${groupName}</div>
+      <div class="tags-grid" data-group="${groupName}"></div>`;
+    root.appendChild(block);
+
+    const grid = block.querySelector('.tags-grid');
+    groupTags.forEach(t => grid.appendChild(buildChip(t)));
+  });
+}
+
+function buildChip(tag) {
+  const g = GROUPS[tag.group] || {};
   const chip = document.createElement('div');
-  chip.className = 'tag-chip' + (isNew ? ' new-tag' : '');
-  chip.textContent = t.label + (isNew ? ' ✨' : '');
-  chip.dataset.id = t.id;
-  if (isNew) chip.style.borderColor = '#f59e0b';
+  const isNew    = newTags.find(n => n.id === tag.id);
+  const isHidden = tag.visible === false;
+  chip.className = 'tag-chip' + (isHidden ? ' hidden-tag' : '') + (isNew ? ' new-tag' : '');
+  chip.textContent = tag.label + (isNew ? ' ✨' : '');
+  chip.dataset.id = tag.id;
+  chip.style.background  = g.bg     || 'var(--bg2)';
+  chip.style.borderColor = g.border || 'var(--border)';
+  chip.style.color       = g.text   || 'var(--text2)';
+  chip.style.setProperty('--chip-text', g.text || '#444');
+  if (selectedTags.includes(tag.id)) chip.classList.add('selected');
   chip.onclick = () => {
-    const idx = selectedTags.indexOf(t.id);
-    if (idx > -1) { selectedTags.splice(idx,1); chip.classList.remove('selected'); }
-    else { selectedTags.push(t.id); chip.classList.add('selected'); }
+    const idx = selectedTags.indexOf(tag.id);
+    if (idx > -1) { selectedTags.splice(idx, 1); chip.classList.remove('selected'); }
+    else          { selectedTags.push(tag.id);    chip.classList.add('selected'); }
   };
-  grid.appendChild(chip);
   return chip;
 }
 
 function addNewTag() {
-  const input = document.getElementById('new-tag-label');
-  const label = input.value.trim();
+  const labelEl = document.getElementById('new-tag-label');
+  const groupEl = document.getElementById('new-tag-group');
+  const label = labelEl.value.trim();
+  const group = groupEl.value;
   if (!label) return;
+  if (!GROUP_BASE[group]) { alert('Pick a group'); return; }
 
-  // Generate id from label
-  const id = label.toLowerCase()
-    .replace(/[^a-z0-9\s-]/g,'')
-    .replace(/\s+/g,'-')
-    .replace(/-+/g,'-')
-    .trim();
-
-  // Check duplicate
-  if (TAGS.find(t => t.id === id) || newTags.find(t => t.id === id)) {
-    alert('This tag already exists!');
+  // Duplicate check (case-insensitive label within group)
+  if (TAGS.some(t => t.group === group && t.label.toLowerCase() === label.toLowerCase())) {
+    alert('A tag with this name already exists in ' + group);
     return;
   }
 
-  const tag = { id, label };
+  // Auto-assign next ID in group's range
+  const base = GROUP_BASE[group];
+  const groupTags = TAGS.filter(t => t.id > base && t.id < base + 100);
+  const maxId = groupTags.length ? Math.max(...groupTags.map(t => t.id)) : base;
+  const id = maxId + 1;
+
+  const tag = { id, label, group, visible: true };
   newTags.push(tag);
   TAGS.push(tag);
-
-  // Render chip and auto-select it
-  const chip = renderTagChip(tag, true);
   selectedTags.push(id);
-  chip.classList.add('selected');
 
-  // Show reminder
+  renderAllChips();
+
+  // Show reminder block
   const reminder = document.getElementById('new-tags-reminder');
-  const list = document.getElementById('new-tags-list');
+  const list     = document.getElementById('new-tags-list');
   reminder.style.display = 'block';
   list.innerHTML = newTags.map(t =>
-    `{ "id": "${t.id}", "label": "${t.label}" }`
+    `{ "id": ${t.id}, "label": "${t.label}", "group": "${t.group}", "visible": true }`
   ).join('<br>');
 
-  input.value = '';
-  input.focus();
+  labelEl.value = '';
+  labelEl.focus();
 }
 
 // Auto-fill ID from title
@@ -368,7 +432,7 @@ function generate(published) {
     title,
     subtitle: document.getElementById('f-subtitle').value.trim() || undefined,
     date: document.getElementById('f-date').value,
-    tags: selectedTags,
+    tags: selectedTags.slice().sort((a, b) => a - b),
     featured: document.getElementById('f-featured').checked || undefined,
     cover: document.getElementById('f-cover').value.trim()
       ? 'images/blog/covers/' + document.getElementById('f-cover').value.trim()

@@ -1,22 +1,49 @@
-[
-  { "id": "crm",          "label": "CRM" },
-  { "id": "retention",    "label": "Retention" },
-  { "id": "acquisition",  "label": "Acquisition" },
-  { "id": "attention",    "label": "Attention" },
-  { "id": "creative",     "label": "Creative" },
-  { "id": "ltv",          "label": "LTV · CAC" },
-  { "id": "saas",         "label": "SaaS" },
-  { "id": "b2b",          "label": "B2B" },
-  { "id": "b2c",          "label": "B2C" },
-  { "id": "strategy",     "label": "Strategy" },
-  { "id": "analytics",    "label": "Analytics" },
-  { "id": "gtm",          "label": "Go-to-market" },
-  { "id": "seasonality",  "label": "Seasonality" },
-  { "id": "product",      "label": "Product" },
-  { "id": "conversion",   "label": "Conversion" },
-  { "id": "brand",        "label": "Brand" },
-  { "id": "content",      "label": "Content" },
-  { "id": "loyalty",      "label": "Loyalty" },
-  { "id": "pricing",      "label": "Pricing" },
-  { "id": "ab-testing",   "label": "A/B Testing" }
-]
+{
+  "groups": {
+    "CRM":         { "text": "#C05000", "bg": "#FFF0E6", "border": "#F5B98A" },
+    "Acquisition": { "text": "#1A5FB4", "bg": "#EBF2FF", "border": "#92B9F5" },
+    "Strategy":    { "text": "#6B3FA0", "bg": "#F5EEFF", "border": "#C9A8F0" },
+    "Analytics":   { "text": "#1A7A4A", "bg": "#EAFAF1", "border": "#8FD9B0" },
+    "Product":     { "text": "#0A7090", "bg": "#E8F7FB", "border": "#85CDE0" },
+    "Leadership":  { "text": "#A0366A", "bg": "#FFF0F6", "border": "#F0A0C8" }
+  },
+  "tags": [
+    { "id": 101, "label": "Retention",             "group": "CRM",         "visible": true  },
+    { "id": 102, "label": "Loyalty",               "group": "CRM",         "visible": true  },
+    { "id": 103, "label": "CRM Strategy",          "group": "CRM",         "visible": true  },
+    { "id": 104, "label": "Email & Lifecycle",     "group": "CRM",         "visible": true  },
+    { "id": 105, "label": "Onboarding",            "group": "CRM",         "visible": true  },
+    { "id": 106, "label": "Churn",                 "group": "CRM",         "visible": false },
+    { "id": 107, "label": "Reactivation",          "group": "CRM",         "visible": false },
+
+    { "id": 201, "label": "Performance Marketing", "group": "Acquisition", "visible": true  },
+    { "id": 202, "label": "Paid Social",           "group": "Acquisition", "visible": true  },
+    { "id": 203, "label": "SEO & Content",         "group": "Acquisition", "visible": true  },
+    { "id": 204, "label": "Referrals",             "group": "Acquisition", "visible": false },
+    { "id": 205, "label": "Partnerships",          "group": "Acquisition", "visible": false },
+
+    { "id": 301, "label": "Strategy",              "group": "Strategy",    "visible": true  },
+    { "id": 302, "label": "Positioning",           "group": "Strategy",    "visible": true  },
+    { "id": 303, "label": "Brand",                 "group": "Strategy",    "visible": true  },
+    { "id": 304, "label": "Seasonality",           "group": "Strategy",    "visible": true  },
+    { "id": 305, "label": "Pricing",               "group": "Strategy",    "visible": true  },
+    { "id": 306, "label": "Competitive",           "group": "Strategy",    "visible": false },
+    { "id": 307, "label": "Go-to-market",          "group": "Strategy",    "visible": true  },
+
+    { "id": 401, "label": "Analytics",             "group": "Analytics",   "visible": true  },
+    { "id": 402, "label": "LTV · CAC",             "group": "Analytics",   "visible": true  },
+    { "id": 403, "label": "A/B Testing",           "group": "Analytics",   "visible": true  },
+    { "id": 404, "label": "Attribution",           "group": "Analytics",   "visible": true  },
+    { "id": 405, "label": "Cohort Analysis",       "group": "Analytics",   "visible": false },
+
+    { "id": 501, "label": "Product Marketing",     "group": "Product",     "visible": true  },
+    { "id": 502, "label": "Conversion",            "group": "Product",     "visible": true  },
+    { "id": 503, "label": "Creative",              "group": "Product",     "visible": true  },
+    { "id": 504, "label": "Attention",             "group": "Product",     "visible": true  },
+
+    { "id": 601, "label": "Team Building",         "group": "Leadership",  "visible": true  },
+    { "id": 602, "label": "Hiring",                "group": "Leadership",  "visible": false },
+    { "id": 603, "label": "Org Design",            "group": "Leadership",  "visible": false },
+    { "id": 604, "label": "CMO Insights",          "group": "Leadership",  "visible": true  }
+  ]
+}
