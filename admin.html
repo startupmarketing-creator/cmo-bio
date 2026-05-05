@@ -114,6 +114,10 @@
         <div class="hint">Can be a past date for old articles.</div>
       </div>
     </div>
+    <div class="field" style="display:flex;align-items:center;gap:10px;">
+      <input type="checkbox" id="f-featured" style="width:auto;margin:0;">
+      <label for="f-featured" style="margin:0;cursor:pointer;">📌 Pin this post (always shown at the top)</label>
+    </div>
   </div>
 
   <!-- TAGS -->
@@ -365,6 +369,7 @@ function generate(published) {
     subtitle: document.getElementById('f-subtitle').value.trim() || undefined,
     date: document.getElementById('f-date').value,
     tags: selectedTags,
+    featured: document.getElementById('f-featured').checked || undefined,
     cover: document.getElementById('f-cover').value.trim()
       ? 'images/blog/covers/' + document.getElementById('f-cover').value.trim()
       : undefined,

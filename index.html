@@ -85,7 +85,7 @@
     }
 
     /* STATS */
-    .stats { display: flex; gap: 3rem; flex-wrap: wrap; padding: 1.75rem 2.5rem; border-top: 0.5px solid var(--border); border-bottom: 0.5px solid var(--border); background: var(--bg2); }
+    .stats { display: flex; gap: 3rem; flex-wrap: wrap; padding: 1.75rem 2.5rem; border-top: 0.5px solid var(--border); border-bottom: 0.5px solid var(--border); background: var(--bg2); margin: 0; }
     .stat-num { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; }
     .stat-label { font-size: 10px; color: var(--text3); letter-spacing: 0.07em; text-transform: uppercase; margin-top: 2px; }
 
@@ -146,7 +146,21 @@
     .contact-link { font-size: 14px; color: var(--text2); padding: 12px 16px; border: 1px solid var(--border); border-radius: 10px; text-decoration: none; transition: border-color 0.15s, color 0.15s; display: block; }
     .contact-link:hover { border-color: var(--border2); color: var(--text); }
 
-    /* NAV mobile */
+    /* TAG CLOUD */
+    .tag-cloud { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 2rem; }
+    .tag-btn {
+      padding: 5px 14px; border-radius: 20px; font-size: 13px;
+      border: 1px solid var(--border); background: var(--bg2);
+      color: var(--text2); cursor: pointer; transition: all 0.15s;
+    }
+    .tag-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .tag-btn.active { background: var(--accent); border-color: var(--accent); color: white; }
+    .tag-btn.all-btn { font-weight: 500; }
+    .pinned-badge {
+      display: inline-block; font-size: 10px; background: #fff3cd;
+      color: #856404; padding: 2px 8px; border-radius: 10px;
+      margin-bottom: 6px; letter-spacing: 0.03em;
+    }
     @media (max-width: 600px) {
       nav { padding: 1rem 1.25rem; }
       .nav-links { gap: 1.25rem; }
@@ -195,69 +209,8 @@
       <div class="section-title serif">Latest writing</div>
       <a class="section-more" href="#" onclick="show('blog')">All posts →</a>
     </div>
-    <div class="masonry">
-
-      <a class="card" href="https://www.linkedin.com/pulse/want-better-conversions-maria-artemieva-8hwef" target="_blank" rel="noopener">
-        <img src="images/blog/covers/want-better-conversions.png" alt="Want Better Conversions?">
-        <div class="card-body">
-          <div class="card-tag">Conversion · Seasonality</div>
-          <div class="card-title">Want Better Conversions?</div>
-          <div class="card-excerpt">Try showing up when they're actually looking. It's rarely about the calendar.</div>
-          <div class="card-link">Read →</div>
-        </div>
-      </a>
-
-      <a class="card" href="https://www.linkedin.com/pulse/make-them-jealous-theyll-thank-you-maria-artemieva-m2irf" target="_blank" rel="noopener">
-        <img src="images/blog/covers/make-them-jealous.png" alt="Make Them Jealous">
-        <div class="card-body">
-          <div class="card-tag">Retention · Satisfaction</div>
-          <div class="card-title">Make Them Jealous — They'll Thank You for It</div>
-          <div class="card-excerpt">How to use contrast, not features, to drive customer satisfaction.</div>
-          <div class="card-link">Read →</div>
-        </div>
-      </a>
-
-      <a class="card" href="https://www.linkedin.com/pulse/stop-chasing-minnows-go-whales-maria-artemieva-v61qf" target="_blank" rel="noopener">
-        <img src="images/blog/covers/stop-chasing-minnows.png" alt="Stop Chasing Minnows">
-        <div class="card-body">
-          <div class="card-tag">Strategy · LTV</div>
-          <div class="card-title">Stop Chasing Minnows — Go for the Whales</div>
-          <div class="card-excerpt">How we discovered high-value customers in an unexpected product.</div>
-          <div class="card-link">Read →</div>
-        </div>
-      </a>
-
-      <a class="card" href="https://www.linkedin.com/pulse/make-easy-leave-maria-artemieva-ma1yf" target="_blank" rel="noopener">
-        <img src="images/blog/covers/make-it-easy-to-leave.png" alt="Make It Easy to Leave">
-        <div class="card-body">
-          <div class="card-tag">Retention · CRM</div>
-          <div class="card-title">Make It Easy to Leave</div>
-          <div class="card-excerpt">That's how you make the next one stay. Let them go — just make sure they remember.</div>
-          <div class="card-link">Read →</div>
-        </div>
-      </a>
-
-      <a class="card" href="https://www.linkedin.com/pulse/customers-dont-lie-maria-artemieva-j1pcf" target="_blank" rel="noopener">
-        <img src="images/blog/covers/customers-dont-lie.png" alt="Customers don't lie">
-        <div class="card-body">
-          <div class="card-tag">Data · Research</div>
-          <div class="card-title">Customers don't lie.</div>
-          <div class="card-excerpt">They just misremember — in predictable ways. That's what the funnel really tells you.</div>
-          <div class="card-link">Read →</div>
-        </div>
-      </a>
-
-      <a class="card" href="https://www.linkedin.com/pulse/ogilvy-wrong-maria-artemieva-jqk8f" target="_blank" rel="noopener">
-        <img src="images/blog/covers/ogilvy-was-wrong.png" alt="Ogilvy was wrong">
-        <div class="card-body">
-          <div class="card-tag">Attention · Creative</div>
-          <div class="card-title">Ogilvy was wrong.</div>
-          <div class="card-excerpt">He claimed kids, sex, and animals grab the most attention. A good question beats all three.</div>
-          <div class="card-link">Read →</div>
-        </div>
-      </a>
-
-    </div>
+    <div class="tag-cloud" id="home-tag-cloud"></div>
+    <div class="masonry" id="home-posts"></div>
   </div>
 </div>
 
@@ -265,99 +218,8 @@
 <div id="blog" class="page">
   <div class="section-wrap">
     <div class="section-head"><div class="section-title serif">All writing</div></div>
-    <div class="masonry">
-
-      <a class="card" href="https://www.linkedin.com/pulse/want-better-conversions-maria-artemieva-8hwef" target="_blank" rel="noopener">
-        <img src="images/blog/covers/want-better-conversions.png" alt="Want Better Conversions?">
-        <div class="card-body">
-          <div class="card-tag">Conversion · Seasonality</div>
-          <div class="card-title">Want Better Conversions?</div>
-          <div class="card-excerpt">Try showing up when they're actually looking. It's rarely about the calendar.</div>
-          <div class="card-link">Read →</div>
-        </div>
-      </a>
-
-      <a class="card" href="https://www.linkedin.com/pulse/make-them-jealous-theyll-thank-you-maria-artemieva-m2irf" target="_blank" rel="noopener">
-        <img src="images/blog/covers/make-them-jealous.png" alt="Make Them Jealous">
-        <div class="card-body">
-          <div class="card-tag">Retention · Satisfaction</div>
-          <div class="card-title">Make Them Jealous — They'll Thank You for It</div>
-          <div class="card-excerpt">How to use contrast, not features, to drive customer satisfaction.</div>
-          <div class="card-link">Read →</div>
-        </div>
-      </a>
-
-      <a class="card" href="https://www.linkedin.com/pulse/stop-chasing-minnows-go-whales-maria-artemieva-v61qf" target="_blank" rel="noopener">
-        <img src="images/blog/covers/stop-chasing-minnows.png" alt="Stop Chasing Minnows">
-        <div class="card-body">
-          <div class="card-tag">Strategy · LTV</div>
-          <div class="card-title">Stop Chasing Minnows — Go for the Whales</div>
-          <div class="card-excerpt">How we discovered high-value customers in an unexpected product.</div>
-          <div class="card-link">Read →</div>
-        </div>
-      </a>
-
-      <a class="card" href="https://www.linkedin.com/pulse/make-easy-leave-maria-artemieva-ma1yf" target="_blank" rel="noopener">
-        <img src="images/blog/covers/make-it-easy-to-leave.png" alt="Make It Easy to Leave">
-        <div class="card-body">
-          <div class="card-tag">Retention · CRM</div>
-          <div class="card-title">Make It Easy to Leave</div>
-          <div class="card-excerpt">That's how you make the next one stay.</div>
-          <div class="card-link">Read →</div>
-        </div>
-      </a>
-
-      <a class="card" href="https://www.linkedin.com/pulse/customers-dont-lie-maria-artemieva-j1pcf" target="_blank" rel="noopener">
-        <img src="images/blog/covers/customers-dont-lie.png" alt="Customers don't lie">
-        <div class="card-body">
-          <div class="card-tag">Data · Research</div>
-          <div class="card-title">Customers don't lie.</div>
-          <div class="card-excerpt">They just misremember — in predictable ways.</div>
-          <div class="card-link">Read →</div>
-        </div>
-      </a>
-
-      <a class="card" href="https://www.linkedin.com/pulse/ogilvy-wrong-maria-artemieva-jqk8f" target="_blank" rel="noopener">
-        <img src="images/blog/covers/ogilvy-was-wrong.png" alt="Ogilvy was wrong">
-        <div class="card-body">
-          <div class="card-tag">Attention · Creative</div>
-          <div class="card-title">Ogilvy was wrong.</div>
-          <div class="card-excerpt">He claimed kids, sex, and animals grab the most attention. A good question beats all three.</div>
-          <div class="card-link">Read →</div>
-        </div>
-      </a>
-
-      <a class="card" href="#" rel="noopener">
-        <img src="images/blog/covers/product-adoption-curve.png" alt="Product adoption curve">
-        <div class="card-body">
-          <div class="card-tag">Product · GTM</div>
-          <div class="card-title">Product adoption curve — where are your real customers?</div>
-          <div class="card-excerpt">Most startups target early adopters. The real money is in the majority.</div>
-          <div class="card-link">Coming soon</div>
-        </div>
-      </a>
-
-      <a class="card" href="#" rel="noopener">
-        <img src="images/blog/covers/b2b-cjm-channel-mix.png" alt="CJM Channel Mix">
-        <div class="card-body">
-          <div class="card-tag">B2B · Channel Strategy</div>
-          <div class="card-title">The B2B CJM Channel Mix</div>
-          <div class="card-excerpt">From traffic to discussion — how to build a full-funnel channel architecture.</div>
-          <div class="card-link">Coming soon</div>
-        </div>
-      </a>
-
-      <a class="card" href="#" rel="noopener">
-        <img src="images/blog/covers/lift-the-dip.png" alt="Lift the Dip">
-        <div class="card-body">
-          <div class="card-tag">Seasonality · Strategy</div>
-          <div class="card-title">Lift the Dip? Or Push at the Peak?</div>
-          <div class="card-excerpt">The seasonal budget question every CMO faces — and how to think about it.</div>
-          <div class="card-link">Coming soon</div>
-        </div>
-      </a>
-
-    </div>
+    <div class="tag-cloud" id="blog-tag-cloud"></div>
+    <div class="masonry" id="blog-posts"></div>
   </div>
 </div>
 
@@ -514,9 +376,127 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
     return false;
   }
-  // Handle nav clicks cleanly
   document.querySelectorAll('a[href="#"]').forEach(a => {
     a.addEventListener('click', e => e.preventDefault());
+  });
+
+  // ── Card builder ──────────────────────────────────────────
+  function makeCard(post, allTags) {
+    const href = post.url || '#';
+    const target = post.url ? 'target="_blank" rel="noopener"' : '';
+    const img = post.cover
+      ? `<img src="${post.cover}" alt="${post.title}" loading="lazy">`
+      : `<div style="height:140px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text3);">No image</div>`;
+
+    // Resolve tag labels
+    const tagLabels = (post.tags || []).map(id => {
+      const found = allTags.find(t => t.id === id);
+      return found ? found.label : id;
+    }).join(' · ');
+
+    const pinned = post.featured
+      ? `<div class="pinned-badge">📌 Pinned</div>` : '';
+
+    const linkText = post.url ? 'Read' : 'Coming soon';
+
+    return `
+      <a class="card" href="${href}" ${target} data-tags='${JSON.stringify(post.tags || [])}'>
+        ${img}
+        <div class="card-body">
+          ${pinned}
+          ${tagLabels ? `<div class="card-tag">${tagLabels}</div>` : ''}
+          <div class="card-title">${post.title}</div>
+          ${post.subtitle ? `<div class="card-excerpt">${post.subtitle}</div>` : ''}
+          <div class="card-link">${linkText} →</div>
+        </div>
+      </a>`;
+  }
+
+  // ── Tag cloud builder ─────────────────────────────────────
+  function buildTagCloud(containerId, postsPool, allTags, onFilter) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    // Collect only tags that appear in this pool
+    const usedTagIds = new Set();
+    postsPool.forEach(p => (p.tags || []).forEach(t => usedTagIds.add(t)));
+    const usedTags = allTags.filter(t => usedTagIds.has(t.id));
+    if (!usedTags.length) return;
+
+    let activeTag = null;
+
+    const allBtn = document.createElement('button');
+    allBtn.className = 'tag-btn all-btn active';
+    allBtn.textContent = 'All';
+    allBtn.onclick = () => {
+      activeTag = null;
+      container.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
+      allBtn.classList.add('active');
+      onFilter(null);
+    };
+    container.appendChild(allBtn);
+
+    usedTags.forEach(tag => {
+      const btn = document.createElement('button');
+      btn.className = 'tag-btn';
+      btn.textContent = tag.label;
+      btn.onclick = () => {
+        activeTag = tag.id;
+        container.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        onFilter(tag.id);
+      };
+      container.appendChild(btn);
+    });
+  }
+
+  // ── Render cards into container ───────────────────────────
+  function renderCards(containerId, posts, allTags) {
+    const el = document.getElementById(containerId);
+    el.innerHTML = posts.length
+      ? posts.map(p => makeCard(p, allTags)).join('')
+      : '<p style="color:var(--text3);font-size:13px;padding:1rem 0;">No posts with this tag yet.</p>';
+  }
+
+  // ── Sort: pinned first, then by date desc ─────────────────
+  function sortPosts(posts) {
+    return [...posts].sort((a, b) => {
+      if (a.featured && !b.featured) return -1;
+      if (!a.featured && b.featured) return 1;
+      return new Date(b.date) - new Date(a.date);
+    });
+  }
+
+  // ── Main loader ───────────────────────────────────────────
+  Promise.all([
+    fetch('posts.json').then(r => r.json()),
+    fetch('tags.json').then(r => r.json()).catch(() => [])
+  ]).then(([posts, allTags]) => {
+
+    const published = sortPosts(posts.filter(p => p.published));
+
+    // ── HOME: 6 latest (pinned always included) ──
+    const homePosts = published.slice(0, 6);
+    renderCards('home-posts', homePosts, allTags);
+    buildTagCloud('home-tag-cloud', homePosts, allTags, (tagId) => {
+      const filtered = tagId
+        ? homePosts.filter(p => (p.tags || []).includes(tagId))
+        : homePosts;
+      renderCards('home-posts', filtered, allTags);
+    });
+
+    // ── BLOG: all posts ──
+    renderCards('blog-posts', published, allTags);
+    buildTagCloud('blog-tag-cloud', published, allTags, (tagId) => {
+      const filtered = tagId
+        ? published.filter(p => (p.tags || []).includes(tagId))
+        : published;
+      renderCards('blog-posts', filtered, allTags);
+    });
+
+  }).catch(() => {
+    document.getElementById('home-posts').innerHTML =
+      '<p style="color:var(--text3);font-size:13px;padding:1rem 0;">Posts loading...</p>';
   });
 </script>
 
