@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Add Post</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f9f9f8; --bg2: #ffffff; --bg3: #f2f1ef;
+    --text: #1a1916; --text2: #6b6a67; --text3: #a09e9b;
+    --border: #e8e6e1; --border2: #ccc9c2; --accent: #3794FF;
+    --green: #2e7d32; --red: #c62828;
+  }
+  body { font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; }
+
+  header { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+  header h1 { font-size: 16px; font-weight: 600; }
+  .header-sub { font-size: 12px; color: var(--text3); }
+
+  .container { max-width: 780px; margin: 2rem auto; padding: 0 1.5rem 4rem; }
+
+  .section { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.25rem; }
+  .section-title { font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text3); margin-bottom: 1.25rem; }
+
+  .field { margin-bottom: 1rem; }
+  .field:last-child { margin-bottom: 0; }
+  label { display: block; font-size: 12px; font-weight: 500; color: var(--text2); margin-bottom: 5px; }
+  input[type=text], input[type=url], input[type=date], textarea {
+    width: 100%; padding: 9px 12px; font-size: 14px;
+    font-family: inherit; border: 1px solid var(--border);
+    border-radius: 8px; background: var(--bg); color: var(--text);
+    outline: none; transition: border-color 0.15s;
+  }
+  input:focus, textarea:focus { border-color: var(--accent); }
+  textarea { min-height: 200px; resize: vertical; line-height: 1.6; font-family: 'Courier New', monospace; font-size: 13px; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+  .tags-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tag-chip { display: flex; align-items: center; gap: 5px; padding: 5px 12px; border: 1px solid var(--border); border-radius: 20px; cursor: pointer; font-size: 12px; color: var(--text2); user-select: none; transition: all 0.15s; }
+  .tag-chip:hover { border-color: var(--accent); color: var(--accent); }
+  .tag-chip.selected { background: var(--accent); border-color: var(--accent); color: white; }
+
+  .toolbar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+  .tb-btn { padding: 5px 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg2); font-size: 12px; cursor: pointer; color: var(--text2); }
+  .tb-btn:hover { background: var(--bg3); }
+
+  .img-insert { border: 1.5px dashed var(--border2); border-radius: 8px; padding: 1rem; text-align: center; cursor: pointer; position: relative; transition: border-color 0.15s; margin-bottom: 8px; }
+  .img-insert:hover { border-color: var(--accent); }
+  .img-insert input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+  .img-insert p { font-size: 12px; color: var(--text3); }
+  .img-list { display: flex; flex-direction: column; gap: 6px; }
+  .img-item { display: flex; align-items: center; gap: 8px; background: var(--bg3); padding: 7px 10px; border-radius: 6px; font-size: 12px; }
+  .img-item span { flex: 1; color: var(--text2); font-family: monospace; }
+  .img-item button { background: none; border: none; cursor: pointer; color: var(--accent); font-size: 12px; padding: 2px 6px; border-radius: 4px; }
+  .img-item button:hover { background: var(--bg2); }
+
+  .output-box { background: #1e1e1e; color: #d4d4d4; border-radius: 10px; padding: 1.25rem; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.7; white-space: pre-wrap; word-break: break-all; min-height: 100px; max-height: 400px; overflow-y: auto; }
+
+  .btn-row { display: flex; gap: 10px; margin-top: 1.25rem; flex-wrap: wrap; align-items: center; }
+  .btn { padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; border: none; transition: opacity 0.15s; }
+  .btn:hover { opacity: 0.85; }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-copy { background: var(--green); color: white; }
+  .btn-draft { background: var(--text3); color: white; }
+
+  .hint { font-size: 11px; color: var(--text3); margin-top: 5px; line-height: 1.6; }
+  .hint code { background: var(--bg3); padding: 1px 5px; border-radius: 4px; font-family: monospace; }
+  .badge { display: inline-block; background: #fff3cd; color: #856404; font-size: 11px; padding: 4px 12px; border-radius: 20px; margin-bottom: 1.25rem; }
+
+  .copy-success { display: none; color: var(--green); font-size: 13px; font-weight: 500; align-items: center; gap: 5px; }
+  .copy-success.show { display: flex; }
+
+  .steps { counter-reset: step; display: flex; flex-direction: column; gap: 6px; margin-top: 1rem; }
+  .step { display: flex; gap: 10px; font-size: 12px; color: var(--text2); line-height: 1.5; }
+  .step::before { counter-increment: step; content: counter(step); min-width: 20px; height: 20px; background: var(--accent); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; margin-top: 1px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>✍️ New post</h1>
+    <div class="header-sub">cmo.bio — admin panel</div>
+  </div>
+  <div style="font-size:12px;color:var(--text3);">Fill in → Generate → Copy → Paste into posts.json</div>
+</header>
+
+<div class="container">
+
+  <div class="badge">📋 Fill in the form → Generate JSON → Copy → paste at the top of posts.json in VS Code</div>
+
+  <!-- BASICS -->
+  <div class="section">
+    <div class="section-title">Basic info</div>
+    <div class="field">
+      <label>Title *</label>
+      <input type="text" id="f-title" placeholder="Ogilvy was wrong.">
+    </div>
+    <div class="field">
+      <label>Subtitle — shown in preview card on homepage *</label>
+      <textarea id="f-subtitle" style="min-height:70px;" placeholder="He claimed kids, sex, and animals grab the most attention. A good question beats all three."></textarea>
+    </div>
+    <div class="two-col">
+      <div class="field">
+        <label>Post ID — used in URL *</label>
+        <input type="text" id="f-id" placeholder="ogilvy-was-wrong">
+        <div class="hint">Latin letters and hyphens only. Auto-filled from title.</div>
+      </div>
+      <div class="field">
+        <label>Publication date *</label>
+        <input type="date" id="f-date">
+        <div class="hint">Can be a past date for old articles.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAGS -->
+  <div class="section">
+    <div class="section-title">Tags — click to select</div>
+    <div class="tags-grid" id="tags-grid"></div>
+
+    <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);">
+      <label style="display:block;font-size:12px;font-weight:500;color:var(--text2);margin-bottom:6px;">Add a new tag</label>
+      <div style="display:flex;gap:8px;">
+        <input type="text" id="new-tag-label" placeholder="Tag name e.g. Positioning" style="flex:1;">
+        <button class="btn btn-primary" style="padding:9px 16px;font-size:13px;" onclick="addNewTag()">+ Add</button>
+      </div>
+      <div class="hint" style="margin-top:6px;">New tags are added to this session and highlighted in the generated JSON. Copy them to <code>tags.json</code> afterwards.</div>
+      <div id="new-tags-reminder" style="display:none;margin-top:10px;background:#fff3cd;border-radius:8px;padding:10px 14px;font-size:12px;color:#856404;">
+        <strong>📋 Add these to tags.json:</strong>
+        <div id="new-tags-list" style="margin-top:6px;font-family:monospace;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COVER -->
+  <div class="section">
+    <div class="section-title">Cover image</div>
+    <div class="field">
+      <label>Cover filename</label>
+      <input type="text" id="f-cover" placeholder="ogilvy-was-wrong.png">
+      <div class="hint">Upload the file to <code>images/blog/covers/</code> in VS Code, then write just the filename here.</div>
+    </div>
+  </div>
+
+  <!-- REPOSTS -->
+  <div class="section">
+    <div class="section-title">Repost links (optional)</div>
+    <div class="field">
+      <label>LinkedIn</label>
+      <input type="url" id="f-linkedin" placeholder="https://linkedin.com/pulse/...">
+    </div>
+    <div class="field">
+      <label>Telegram</label>
+      <input type="url" id="f-telegram" placeholder="https://t.me/...">
+    </div>
+    <div class="field">
+      <label>Other</label>
+      <input type="url" id="f-other" placeholder="https://...">
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="section">
+    <div class="section-title">Article body</div>
+    <div class="toolbar">
+      <button class="tb-btn" onclick="insert('## ', '')">H2</button>
+      <button class="tb-btn" onclick="insert('### ', '')">H3</button>
+      <button class="tb-btn" onclick="insert('**', '**')"><b>Bold</b></button>
+      <button class="tb-btn" onclick="insert('\n> ', '')">Quote</button>
+      <button class="tb-btn" onclick="insert('\n---\n', '')">Divider</button>
+      <button class="tb-btn" onclick="insert('[link text](', ')')">Link</button>
+    </div>
+
+    <div style="margin-bottom:10px;">
+      <div style="font-size:12px;font-weight:500;color:var(--text2);margin-bottom:6px;">In-article images</div>
+      <div class="img-insert">
+        <input type="file" accept="image/*" multiple onchange="handleContentImages(event)">
+        <p>📎 Click to select images for inside the article<br>
+        <span style="font-size:10px;opacity:0.7;">After generating, copy the files to images/blog/content/ in VS Code</span></p>
+      </div>
+      <div class="img-list" id="content-imgs"></div>
+    </div>
+
+    <textarea id="f-body" placeholder="## Why Ogilvy got it wrong&#10;&#10;Write your article here.&#10;&#10;> This is a pull quote&#10;&#10;Use the toolbar above to format. Click 'Insert' next to an image to place it in the text."></textarea>
+    <div class="hint">Use ## for H2 headings, ### for H3, **text** for bold, > for quotes.</div>
+  </div>
+
+  <!-- GENERATE -->
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="generate(true)">✅ Generate — Published</button>
+    <button class="btn btn-draft" onclick="generate(false)">💾 Generate — Draft</button>
+  </div>
+
+  <!-- OUTPUT -->
+  <div class="section" id="output-section" style="display:none; margin-top:1.25rem;">
+    <div class="section-title">Generated JSON — copy and paste into posts.json</div>
+    <div class="output-box" id="output"></div>
+    <div class="btn-row">
+      <button class="btn btn-copy" onclick="copyJSON()">📋 Copy JSON</button>
+      <div class="copy-success" id="copy-success">✓ Copied!</div>
+    </div>
+    <div class="steps">
+      <div class="step">Open <code>posts.json</code> in VS Code</div>
+      <div class="step">Click right after the opening <code>[</code> on line 1</div>
+      <div class="step">Paste (Ctrl+V) — the block already has a trailing comma ✓</div>
+      <div class="step">Save (Ctrl+S) → Source Control → Commit → Sync</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const TAGS = [
+  {id:"crm",label:"CRM"},{id:"retention",label:"Retention"},{id:"acquisition",label:"Acquisition"},
+  {id:"attention",label:"Attention"},{id:"creative",label:"Creative"},{id:"ltv",label:"LTV · CAC"},
+  {id:"saas",label:"SaaS"},{id:"b2b",label:"B2B"},{id:"b2c",label:"B2C"},
+  {id:"strategy",label:"Strategy"},{id:"analytics",label:"Analytics"},{id:"gtm",label:"Go-to-market"},
+  {id:"seasonality",label:"Seasonality"},{id:"product",label:"Product"},{id:"conversion",label:"Conversion"},
+  {id:"brand",label:"Brand"},{id:"content",label:"Content"},{id:"loyalty",label:"Loyalty"},
+  {id:"pricing",label:"Pricing"},{id:"ab-testing",label:"A/B Testing"}
+];
+
+let selectedTags = [];
+let contentImages = [];
+let newTags = []; // tags added in this session
+
+// Render tags
+const grid = document.getElementById('tags-grid');
+TAGS.forEach(t => renderTagChip(t, false));
+
+function renderTagChip(t, isNew) {
+  const chip = document.createElement('div');
+  chip.className = 'tag-chip' + (isNew ? ' new-tag' : '');
+  chip.textContent = t.label + (isNew ? ' ✨' : '');
+  chip.dataset.id = t.id;
+  if (isNew) chip.style.borderColor = '#f59e0b';
+  chip.onclick = () => {
+    const idx = selectedTags.indexOf(t.id);
+    if (idx > -1) { selectedTags.splice(idx,1); chip.classList.remove('selected'); }
+    else { selectedTags.push(t.id); chip.classList.add('selected'); }
+  };
+  grid.appendChild(chip);
+  return chip;
+}
+
+function addNewTag() {
+  const input = document.getElementById('new-tag-label');
+  const label = input.value.trim();
+  if (!label) return;
+
+  // Generate id from label
+  const id = label.toLowerCase()
+    .replace(/[^a-z0-9\s-]/g,'')
+    .replace(/\s+/g,'-')
+    .replace(/-+/g,'-')
+    .trim();
+
+  // Check duplicate
+  if (TAGS.find(t => t.id === id) || newTags.find(t => t.id === id)) {
+    alert('This tag already exists!');
+    return;
+  }
+
+  const tag = { id, label };
+  newTags.push(tag);
+  TAGS.push(tag);
+
+  // Render chip and auto-select it
+  const chip = renderTagChip(tag, true);
+  selectedTags.push(id);
+  chip.classList.add('selected');
+
+  // Show reminder
+  const reminder = document.getElementById('new-tags-reminder');
+  const list = document.getElementById('new-tags-list');
+  reminder.style.display = 'block';
+  list.innerHTML = newTags.map(t =>
+    `{ "id": "${t.id}", "label": "${t.label}" }`
+  ).join('<br>');
+
+  input.value = '';
+  input.focus();
+}
+
+// Auto-fill ID from title
+document.getElementById('f-title').addEventListener('input', e => {
+  const id = e.target.value.toLowerCase()
+    .replace(/[^a-z0-9\s-]/g,'')
+    .replace(/\s+/g,'-')
+    .replace(/-+/g,'-')
+    .trim();
+  document.getElementById('f-id').value = id;
+});
+
+// Default date = today
+document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
+
+// Enter key for new tag
+document.getElementById('new-tag-label').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); addNewTag(); }
+});
+
+// Toolbar
+function insert(before, after) {
+  const ta = document.getElementById('f-body');
+  const start = ta.selectionStart, end = ta.selectionEnd;
+  const selected = ta.value.substring(start, end);
+  ta.value = ta.value.substring(0,start) + before + selected + after + ta.value.substring(end);
+  ta.focus();
+  ta.selectionStart = start + before.length;
+  ta.selectionEnd = start + before.length + selected.length;
+}
+
+// Content images
+function handleContentImages(e) {
+  Array.from(e.target.files).forEach(f => {
+    if (contentImages.find(i => i.name === f.name)) return;
+    contentImages.push({ name: f.name, path: 'images/blog/content/' + f.name });
+    renderImgList();
+  });
+}
+
+function renderImgList() {
+  const list = document.getElementById('content-imgs');
+  list.innerHTML = '';
+  contentImages.forEach((img, idx) => {
+    const div = document.createElement('div');
+    div.className = 'img-item';
+    div.innerHTML = `
+      <span>${img.path}</span>
+      <button onclick="insertImg(${idx})">Insert into text</button>
+      <button onclick="removeImg(${idx})" style="color:#c62828;">✕ Remove</button>
+    `;
+    list.appendChild(div);
+  });
+}
+
+function insertImg(idx) {
+  const img = contentImages[idx];
+  const ta = document.getElementById('f-body');
+  const pos = ta.selectionStart;
+  const md = `\n\n![Image](${img.path})\n\n`;
+  ta.value = ta.value.substring(0,pos) + md + ta.value.substring(pos);
+  ta.focus();
+}
+
+function removeImg(idx) {
+  contentImages.splice(idx,1);
+  renderImgList();
+}
+
+// Generate
+function generate(published) {
+  const title = document.getElementById('f-title').value.trim();
+  const id = document.getElementById('f-id').value.trim();
+  if (!title) { alert('Please fill in the Title'); return; }
+  if (!id) { alert('Please fill in the Post ID'); return; }
+
+  const post = {
+    id,
+    title,
+    subtitle: document.getElementById('f-subtitle').value.trim() || undefined,
+    date: document.getElementById('f-date').value,
+    tags: selectedTags,
+    cover: document.getElementById('f-cover').value.trim()
+      ? 'images/blog/covers/' + document.getElementById('f-cover').value.trim()
+      : undefined,
+    reposts: undefined,
+    body: document.getElementById('f-body').value.trim(),
+    published
+  };
+
+  const li = document.getElementById('f-linkedin').value.trim();
+  const tg = document.getElementById('f-telegram').value.trim();
+  const ot = document.getElementById('f-other').value.trim();
+  if (li || tg || ot) {
+    post.reposts = {};
+    if (li) post.reposts.linkedin = li;
+    if (tg) post.reposts.telegram = tg;
+    if (ot) post.reposts.other = ot;
+  }
+
+  // Clean undefined
+  Object.keys(post).forEach(k => post[k] === undefined && delete post[k]);
+
+  const json = JSON.stringify(post, null, 2) + ',';
+  document.getElementById('output').textContent = json;
+  document.getElementById('output-section').style.display = 'block';
+  document.getElementById('output-section').scrollIntoView({ behavior: 'smooth' });
+}
+
+function copyJSON() {
+  const text = document.getElementById('output').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const s = document.getElementById('copy-success');
+    s.classList.add('show');
+    setTimeout(() => s.classList.remove('show'), 3000);
+  });
+}
+</script>
+</body>
+</html>

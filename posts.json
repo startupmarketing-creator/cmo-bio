@@ -1,0 +1,62 @@
+[
+  {
+    "id": "want-better-conversions",
+    "title": "Want Better Conversions?",
+    "subtitle": "Try showing up when they're actually looking. It's rarely about the calendar.",
+    "date": "2026-05-01",
+    "tag": "Conversion · Seasonality",
+    "cover": "images/blog/covers/want_better_conversions.png",
+    "url": "https://www.linkedin.com/pulse/want-better-conversions-maria-artemieva-8hwef",
+    "published": true
+  },
+  {
+    "id": "make-them-jealous",
+    "title": "Make Them Jealous — They'll Thank You for It",
+    "subtitle": "How to use contrast, not features, to drive customer satisfaction.",
+    "date": "2026-04-15",
+    "tag": "Retention · Satisfaction",
+    "cover": "images/blog/covers/make_them_jealous.png",
+    "url": "https://www.linkedin.com/pulse/make-them-jealous-theyll-thank-you-maria-artemieva-m2irf",
+    "published": true
+  },
+  {
+    "id": "stop-chasing-minnows",
+    "title": "Stop Chasing Minnows — Go for the Whales",
+    "subtitle": "How we discovered high-value customers in an unexpected product.",
+    "date": "2026-04-01",
+    "tag": "Strategy · LTV",
+    "cover": "images/blog/covers/stop_chasing_minnows.png",
+    "url": "https://www.linkedin.com/pulse/stop-chasing-minnows-go-whales-maria-artemieva-v61qf",
+    "published": true
+  },
+  {
+    "id": "make-it-easy-to-leave",
+    "title": "Make It Easy to Leave",
+    "subtitle": "That's how you make the next one stay. Let them go — just make sure they remember.",
+    "date": "2026-03-15",
+    "tag": "Retention · CRM",
+    "cover": "images/blog/covers/make_it_easy_to_leave.png",
+    "url": "https://www.linkedin.com/pulse/make-easy-leave-maria-artemieva-ma1yf",
+    "published": true
+  },
+  {
+    "id": "customers-dont-lie",
+    "title": "Customers don't lie.",
+    "subtitle": "They just misremember — in predictable ways. That's what the funnel really tells you.",
+    "date": "2026-03-01",
+    "tag": "Data · Research",
+    "cover": "images/blog/covers/customers_dont_lie.png",
+    "url": "https://www.linkedin.com/pulse/customers-dont-lie-maria-artemieva-j1pcf",
+    "published": true
+  },
+  {
+    "id": "ogilvy-was-wrong",
+    "title": "Ogilvy was wrong.",
+    "subtitle": "He claimed kids, sex, and animals grab the most attention. A good question beats all three.",
+    "date": "2026-02-15",
+    "tag": "Attention · Creative",
+    "cover": "images/blog/covers/ogilvy_was_wrong.png",
+    "url": "https://www.linkedin.com/pulse/ogilvy-wrong-maria-artemieva-jqk8f",
+    "published": true
+  }
+]

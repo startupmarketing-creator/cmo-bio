@@ -1,0 +1,22 @@
+[
+  { "id": "crm",          "label": "CRM" },
+  { "id": "retention",    "label": "Retention" },
+  { "id": "acquisition",  "label": "Acquisition" },
+  { "id": "attention",    "label": "Attention" },
+  { "id": "creative",     "label": "Creative" },
+  { "id": "ltv",          "label": "LTV · CAC" },
+  { "id": "saas",         "label": "SaaS" },
+  { "id": "b2b",          "label": "B2B" },
+  { "id": "b2c",          "label": "B2C" },
+  { "id": "strategy",     "label": "Strategy" },
+  { "id": "analytics",    "label": "Analytics" },
+  { "id": "gtm",          "label": "Go-to-market" },
+  { "id": "seasonality",  "label": "Seasonality" },
+  { "id": "product",      "label": "Product" },
+  { "id": "conversion",   "label": "Conversion" },
+  { "id": "brand",        "label": "Brand" },
+  { "id": "content",      "label": "Content" },
+  { "id": "loyalty",      "label": "Loyalty" },
+  { "id": "pricing",      "label": "Pricing" },
+  { "id": "ab-testing",   "label": "A/B Testing" }
+]
